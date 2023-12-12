@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MySocket {
-    private ArrayList<SubThread> subThreads = new ArrayList<>();
+    private ArrayList<Runnable> subThreads = new ArrayList<>();
     private ArrayList<Socket> sockets = new ArrayList<>();
 
     public MySocket() throws IOException {
@@ -16,17 +16,7 @@ public class MySocket {
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
             String s = scanner.next();
-            if("quit".equals(s)){
-                for (SubThread subThread : subThreads) {
-                    subThread.interrupt();
-                }
-                for (Socket socket : sockets) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            if ("quit".equals(s)) {
                 System.exit(0);
             }
         }
@@ -35,12 +25,12 @@ public class MySocket {
         while (true) {
             {
                 Socket socket = ss.accept();
-                SubThread subThread = new SubThread(socket);
-                subThread.setName("client" + index++);
-                subThread.start();
-                sockets.add(socket);
-                subThreads.add(subThread);
+                new SubThread(socket).start();
             }
         }
     }
 }
+
+
+
+
